@@ -389,7 +389,10 @@ namespace SidWiz {
                                         /*frameTriggerOffset = 0;                                 //syncronation
                                    while (voiceData[i, frameIndex + frameTriggerOffset] < 128 && frameTriggerOffset < 3000) frameTriggerOffset++;
                                    while (voiceData[i, frameIndex + frameTriggerOffset] >= 126 && frameTriggerOffset < 3000) frameTriggerOffset++;*/
-
+                                        #region Flip waveform 
+                                        for(int j = 0; j < vData.Length; j++)
+                                            vData[j] = (byte)(255 - vData[j]);
+                                        #endregion
 
                                         //jac is the search window
                                         yMax = 0;                                       // scan for peak values
@@ -408,15 +411,17 @@ namespace SidWiz {
 
                                         triggerLevel = (yMin + yMax) / 2;   //the middle line of the waveform
 
-                #endregion
-                                        
+                    #endregion
+
                                         //Synchronization.Start();
 
-                    #region syncronization
-                                        //  while (vData[qx] >= (triggerLevel) && qx < jac * 2) qx++;
-                                        //    while ((vData[qx] != yMax-1 || (yMin == yMax || yMin == yMax-1)) && qx < jac*2) qx++;
 
-                                        if (altSync[i] == false)
+
+                    #region syncronization
+                    //  while (vData[qx] >= (triggerLevel) && qx < jac * 2) qx++;
+                    //    while ((vData[qx] != yMax-1 || (yMin == yMax || yMin == yMax-1)) && qx < jac*2) qx++;
+
+                    if(altSync[i] == false)
                                         {
                                             frameTriggerOffset = jac;
                                             while (vData[frameTriggerOffset] < (triggerLevel + 1) && frameTriggerOffset < jac * 2) frameTriggerOffset++;
@@ -525,10 +530,7 @@ namespace SidWiz {
                                     
                                         //Synchronization.Stop();
 
-                    #region Flip waveform for drawing
-                                        for(int j=0; j<vData.Length; j++)
-                                            vData[j]=(byte)(255 - vData[j]);
-                #endregion             
+         
                                         
                     #region Draw Waveform Setup
 
@@ -1121,7 +1123,7 @@ namespace SidWiz {
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SidWiz 1.0 by Rolf R Bakke \r\nSidWiz 2 by RushJet1\r\nAVIFile Wrapper by Corinna John\r\nWAVFile class by CalicoSkies\r\n\r\nRelease 13.1");
+            MessageBox.Show("SidWiz 1.0 by Rolf R Bakke \r\nSidWiz 2 by RushJet1\r\nAVIFile Wrapper by Corinna John\r\nWAVFile class by CalicoSkies\r\n\r\nRelease 13.1f");
         }
 
 
@@ -1160,22 +1162,24 @@ namespace SidWiz {
         private void button2_Click_1(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Audio Files|*.wav;*.mp3;*.ogg;*.flac";
-            ofd.ShowDialog();
-            if (Path.GetExtension(ofd.FileName) == ".wav" || Path.GetExtension(ofd.FileName) == ".mp3" || Path.GetExtension(ofd.FileName) == ".ogg" || Path.GetExtension(ofd.FileName) == ".flac")
+            ofd.Filter = "WAV File|*.wav";
+            if(ofd.ShowDialog() == DialogResult.Cancel)
+                return;
+            if (Path.GetExtension(ofd.FileName) == ".wav" )
             {
                 button2.Text = System.IO.Path.GetFileName(ofd.FileName);
                 masterFile = ofd.FileName;
             }
             else
             {
-                MessageBox.Show("Unsupported format or no file was selected.");
+                MessageBox.Show("Unsupported format.");
                 return;
             }
         }
 
         private void location_Changed(object sender, EventArgs e){
             lay.Location = new Point(this.Location.X + this.Width - 10, this.Location.Y);
+            this.Focus();
         }
 
         private void focus_Changed(object sender, EventArgs e)
@@ -1281,10 +1285,11 @@ namespace SidWiz {
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "SidWiz2 Template (.sdt)|*.sdt";
-            ofd.ShowDialog();
+            if(ofd.ShowDialog() == DialogResult.Cancel)
+                return;
             if (Path.GetExtension(ofd.FileName) != ".sdt")
             {
-                MessageBox.Show("Unsupported format or no file was selected.");
+                MessageBox.Show("Unsupported format .");
                 return;
             }
 

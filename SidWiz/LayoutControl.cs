@@ -31,7 +31,8 @@ namespace SidWiz
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Wave files (*.wav)|*.wav";
-            ofd.ShowDialog();
+            if(ofd.ShowDialog() == DialogResult.Cancel)
+                return;
             if (System.IO.Path.GetExtension(ofd.FileName) == ".wav")
             {
                 label2.Text = System.IO.Path.GetFileName(ofd.FileName);
@@ -39,7 +40,7 @@ namespace SidWiz
             }
             else
             {
-                MessageBox.Show("This is not a .wav file, or no file was selected.");
+                MessageBox.Show("This is not a .wav file.");
                 return;
             }
 
