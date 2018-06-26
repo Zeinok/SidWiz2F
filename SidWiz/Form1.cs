@@ -511,9 +511,13 @@ namespace SidWiz {
                                         }*/
 
                 #endregion
-
+                                    
                                         //Synchronization.Stop();
 
+                    #region Flip waveform for drawing
+                                        for(int j=0; j<vData.Length; j++)
+                                            vData[j]=(byte)(255 - vData[j]);
+                #endregion             
                                         
                     #region Draw Waveform Setup
 
