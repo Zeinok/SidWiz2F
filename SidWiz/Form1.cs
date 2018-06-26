@@ -126,7 +126,7 @@ namespace SidWiz {
 
             int triggerLevel = 135;
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "MKV Files (.mkv)|*.mkv";
+            sfd.Filter = "AVI Files (.avi)|*.avi";
             sfd.ShowDialog();
             if (sfd.FileName == "")
             {
@@ -197,13 +197,24 @@ namespace SidWiz {
             Bitmap bitmap = new Bitmap(ResX, ResY, PixelFormat.Format24bppRgb);
             //create a new AVI file
 
-            String tempavi = Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 8) + ".avi";
+            //String tempavi = Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 8) + ".avi";
+            string avifile = sfd.FileName;
 
-
-            if (File.Exists(tempavi)) File.Delete(tempavi);
-            AviManager aviManager = new AviManager(tempavi, false);
+            if (File.Exists(avifile)) File.Delete(avifile);
+            AviManager aviManager = new AviManager(avifile, false);
             //add a new video stream and one frame to the new file
             VideoStream aviStream = aviManager.AddVideoStream(true, 60, ResX * ResY * 3, ResX, ResY, PixelFormat.Format24bppRgb);
+            AviManager soundManager;
+            AudioStream audioStream;
+            try {
+                soundManager = new AviManager(masterFile, true);
+                audioStream = soundManager.GetWaveStream();
+                aviManager.AddAudioStream(audioStream, 0);
+                soundManager.Close();
+            } catch(Exception ex) {
+                MessageBox.Show(ex.Message,"Failed to open master audio file!",MessageBoxButtons.OK,MessageBoxIcon.Asterisk);
+                return;
+            }
             float resScaler = (float)Math.Ceiling((float)voices/(float)columns);
             int slotSize = ResY / (int)resScaler;
 
@@ -949,19 +960,19 @@ namespace SidWiz {
 
             #region process with MKVMerge
 
-            Process p = new Process();
-            // Redirect the output stream of the child process.
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "mkvmerge.exe";
-            p.StartInfo.Arguments = "-o \"" + sfd.FileName + "\" " + tempavi +" \"" + masterFile + "\"";
-            p.Start();
-            String strT = "";
-            strT = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-            //MessageBox.Show(strT);
+            //Process p = new Process();
+            //// Redirect the output stream of the child process.
+            //p.StartInfo.UseShellExecute = false;
+            //p.StartInfo.RedirectStandardOutput = true;
+            //p.StartInfo.FileName = "mkvmerge.exe";
+            //p.StartInfo.Arguments = "-o \"" + sfd.FileName + "\" " + tempavi +" \"" + masterFile + "\"";
+            //p.Start();
+            //String strT = "";
+            //strT = p.StandardOutput.ReadToEnd();
+            //p.WaitForExit();
+            ////MessageBox.Show(strT);
 
-            if (File.Exists(tempavi)) File.Delete(tempavi);
+            //if (File.Exists(tempavi)) File.Delete(tempavi);
 
 
 
