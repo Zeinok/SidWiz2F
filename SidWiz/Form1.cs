@@ -277,7 +277,7 @@ namespace SidWiz {
             int jua = ((jumpAmount * 5) / channels)*((int)scale+1);
 
 
-
+            List<string> err = new List<string>();
             for (int i = 0; i < voices; i++)
             {
                 if (!File.Exists(pathList[i]))
@@ -286,9 +286,20 @@ namespace SidWiz {
                     return;
                 }
                 voiceData[i] = new WAVFile();
-                voiceData[i].Open(pathList[i], WAVFile.WAVFileMode.READ);
+                try {
+                    voiceData[i].Open(pathList[i], WAVFile.WAVFileMode.READ);
+                }catch(Exception ex) {
+                    err.Add(pathList[i] + ": " + ex.Message);
+                    
+                }
             }
-
+            if(err.Count > 0) {
+                StringBuilder sb = new StringBuilder();
+                foreach(string msg in err)
+                    sb.AppendLine(msg);
+                MessageBox.Show(sb.ToString(), "Failed to open file!");
+                return; //exit function
+            }
 #endregion
 
             //ReadFromDisk.Stop();
