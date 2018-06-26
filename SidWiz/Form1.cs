@@ -862,8 +862,6 @@ namespace SidWiz {
 
                     if (Application.OpenForms.Count == 0) break;  //if the program is closed, jump out of loop and exit gracefully.
 
-                    Application.DoEvents(); //so the UI doesn't freeze
-
                     //following code adds a frame of video data to the avistream
 
                     frameIndex += jumpAmount;
@@ -900,6 +898,8 @@ namespace SidWiz {
                     
                 
                     aviStream.AddFrame(framebuffer);    //add frame to AVI
+                    
+                    Application.DoEvents(); //so the UI doesn't freeze
 
                     try
                     {
