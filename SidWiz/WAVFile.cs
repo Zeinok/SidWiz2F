@@ -120,7 +120,7 @@ namespace SidWiz
             {
                 //byte[] data = File.ReadAllBytes(mFilename);
 
-                mFileStream = new FileStream(mFilename,FileMode.Open);
+                mFileStream = new FileStream(mFilename,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
                 
                 mFileMode = pMode;
 
